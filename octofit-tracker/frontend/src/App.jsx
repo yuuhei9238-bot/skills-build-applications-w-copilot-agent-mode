@@ -1,122 +1,61 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { NavLink, Route, Routes } from 'react-router-dom';
+import Activities from './components/Activities';
+import Leaderboard from './components/Leaderboard';
+import Teams from './components/Teams';
+import Users from './components/Users';
+import Workouts from './components/Workouts';
+import './App.css';
+
+const navItems = [
+  { to: '/', label: 'Users' },
+  { to: '/teams', label: 'Teams' },
+  { to: '/activities', label: 'Activities' },
+  { to: '/leaderboard', label: 'Leaderboard' },
+  { to: '/workouts', label: 'Workouts' },
+];
 
 function App() {
-  const [count, setCount] = useState(0)
+  const codespaceName = import.meta.env.VITE_CODESPACE_NAME;
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="container py-4">
+      <div className="alert alert-light border mb-4">
+        <strong>API base:</strong>{' '}
+        {codespaceName
+          ? `https://${codespaceName}-8000.app.github.dev/api`
+          : 'http://localhost:8000/api'}
+      </div>
 
-      <div className="ticks"></div>
+      <div className="alert alert-warning small mb-4" role="alert">
+        Define <code>VITE_CODESPACE_NAME</code> in <code>.env.local</code> for Codespaces. If it is unset, the app falls back to the localhost API.
+      </div>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+      <nav className="navbar navbar-expand-lg navbar-light bg-white rounded shadow-sm mb-4 px-3">
+        <div className="container-fluid">
+          <span className="navbar-brand mb-0 h1">Octofit Tracker</span>
+          <div className="navbar-nav flex-row gap-2 flex-wrap">
+            {navItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) => `nav-link btn btn-sm ${isActive ? 'btn-primary text-white' : 'btn-outline-primary'}`}
+              >
+                {item.label}
+              </NavLink>
+            ))}
+          </div>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      </nav>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      <Routes>
+        <Route path="/" element={<Users />} />
+        <Route path="/teams" element={<Teams />} />
+        <Route path="/activities" element={<Activities />} />
+        <Route path="/leaderboard" element={<Leaderboard />} />
+        <Route path="/workouts" element={<Workouts />} />
+      </Routes>
+    </div>
+  );
 }
 
-export default App
+export default App;
