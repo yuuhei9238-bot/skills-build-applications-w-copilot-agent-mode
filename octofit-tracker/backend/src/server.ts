@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import cors from 'cors';
 import mongoose from 'mongoose';
 import { connectToDatabase } from './config/database';
 import { Activity, LeaderboardEntry, Team, User, Workout } from './models';
@@ -10,6 +11,10 @@ const baseUrl = codespaceName
   ? `https://${codespaceName}-8000.app.github.dev`
   : `http://localhost:${PORT}`;
 
+app.use(cors({
+  origin: true,
+  credentials: true,
+}));
 app.use(express.json());
 
 app.get('/api/health', (_req: Request, res: Response) => {
@@ -24,6 +29,7 @@ app.get('/api', (_req: Request, res: Response) => {
   res.json({
     name: 'Octofit Tracker API',
     baseUrl,
+    codespaceName: codespaceName || null,
     routes: [
       '/api/health',
       '/api/users/',
