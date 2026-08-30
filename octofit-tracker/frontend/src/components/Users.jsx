@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
-import { fetchCollection } from './api';
+
+const usersEndpoint = import.meta.env.VITE_CODESPACE_NAME
+  ? `https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev/api/users`
+  : 'http://localhost:8000/api/users';
 
 export default function Users() {
   const [users, setUsers] = useState([]);
@@ -9,8 +12,15 @@ export default function Users() {
   useEffect(() => {
     let active = true;
 
-    fetchCollection('users')
-      .then((data) => {
+    fetch(usersEndpoint)
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error('Unable to load users.');
+        }
+
+        const payload = await response.json();
+        const data = Array.isArray(payload) ? payload : payload.data || [];
+
         if (active) {
           setUsers(data);
         }

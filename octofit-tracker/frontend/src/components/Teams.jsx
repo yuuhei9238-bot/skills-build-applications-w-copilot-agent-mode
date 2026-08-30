@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
-import { fetchCollection } from './api';
+
+const teamsEndpoint = import.meta.env.VITE_CODESPACE_NAME
+  ? `https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev/api/teams`
+  : 'http://localhost:8000/api/teams';
 
 export default function Teams() {
   const [teams, setTeams] = useState([]);
@@ -9,8 +12,15 @@ export default function Teams() {
   useEffect(() => {
     let active = true;
 
-    fetchCollection('teams')
-      .then((data) => {
+    fetch(teamsEndpoint)
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error('Unable to load teams.');
+        }
+
+        const payload = await response.json();
+        const data = Array.isArray(payload) ? payload : payload.data || [];
+
         if (active) {
           setTeams(data);
         }
